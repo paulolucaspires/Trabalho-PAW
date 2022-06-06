@@ -8,13 +8,13 @@ import(
 	"os"
 
   _ "github.com/go-sql-driver/mysql"
+  "github.com/paulolucaspires/TRABALHO-PAW/projeto/models/mysql"
 )
-
-
 
 type application struct{
   errorLog *log.Logger
   infoLog *log.Logger
+  formularios *mysql.projetoModel
 }
 
 
@@ -39,13 +39,13 @@ func main() {
   app := &application{
     errorLog: errorLog,
     infoLog: infoLog,
-
+    formularios: &mysql.formularioModel{DB:db},
   }
 
   srv := &http.Server{
    Addr: *addr,
    ErrorLog: errorLog,
-   Handler: app.routes()
+   Handler: app.routes(),
   }
 
   infoLog.Printf("Inicializando o servidor na porta %s\n", *addr)

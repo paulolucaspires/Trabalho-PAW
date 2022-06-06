@@ -1,12 +1,12 @@
 package mysql
 import (
 	"database/sql"
-	
+	"github.com/paulolucaspires/Trabalho-PAW/projeto/models"
 )
-type projetoModel struct{
+type formularioModel struct{
   DB *sql.DB
 }
-func(m *projetoModel)Insert(title, content, expires string) (int, error){
+func(m *formularioModel)Insert(title, content, expires string) (int, error){
   stmt := `INSERT INTO snippets (title, content, created, expires) 
             VALUES(?,?,UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
 
@@ -27,3 +27,6 @@ func(m *projetoModel) Get(id int)(*models.projeto, error){
 func(m * projetoModel) Latest()([]*models.projeto, error){
   return nil, nil
 }
+
+
+// go run *
