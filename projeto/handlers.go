@@ -1,13 +1,10 @@
 package main
 
-//go run cmd/web/*
 import (
 	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
-
-	"github.com/rmcs87/cc5m/pkg/models"
 )
 
 func (app *application) home(rw http.ResponseWriter, r *http.Request) {
@@ -16,23 +13,21 @@ func (app *application) home(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-  snippets, err := app.snippets.Latest()
+  formulario, err := app.formulario.Latest()
   if err != nil{
     app.serverError(rw, err)
     return
   }
 
 	files := []string{
-		"./ui/html/home.page.tmpl.html",
-		"./ui/html/base.layout.tmpl.html",
-		"./ui/html/footer.partial.tmpl.html",
+		"./html/home.html",
 	}
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
 		app.serverError(rw, err)
 		return
 	}
-	err = ts.Execute(rw, snippets)
+	err = ts.Execute(rw, formulario)
 	if err != nil {
 		app.serverError(rw, err)
 		return
@@ -40,15 +35,14 @@ func (app *application) home(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-//http://localhost:4000/snippet?id=1
 func (app *application) perfil(rw http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
-	if err != nil || id < 1 {
+	name, err := strconv.Atoi(r.URL.Query().Get("name"))
+	if err != nil  {
 		app.notFound(rw)
 		return
 	}
 
-  s, err := app.snippets.Get(id)
+  s, err := app.formualrio.Get(name)
   if err == models.ErrNoRecord {
     app.notFound(rw)
     return
@@ -56,22 +50,6 @@ func (app *application) perfil(rw http.ResponseWriter, r *http.Request) {
     app.serverError(rw, err)
     return
   }
-  
-  files := []string{
-		"./ui/html/show.page.tmpl.html",
-		"./ui/html/base.layout.tmpl.html",
-		"./ui/html/footer.partial.tmpl.html",
-	}
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(rw, err)
-		return
-	}
-	err = ts.Execute(rw, s)
-	if err != nil {
-		app.serverError(rw, err)
-		return
-	}
   
 }
 
@@ -86,11 +64,24 @@ func (app *application) cadastro(rw http.ResponseWriter, r *http.Request) {
 	content := "Tentando lidar com o banco de dados"
 	expire := "7"
 
-	id, err := app.snippets.Insert(title, content, expire)
+	id, err := app.formulario.Insert(title, content, expire)
+	if err != nil {
+		app.serverError(rw, err)
+		return
+	}
+  files := []string{
+		"./html/home.html",
+	}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(rw, err)
+		return
+	}
+	err = ts.Execute(rw, formulario)
 	if err != nil {
 		app.serverError(rw, err)
 		return
 	}
 
-	http.Redirect(rw, r, fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
+	http.Redirect(rw, r, fmt.Sprintf("/formulario?id=%d", id), http.StatusSeeOther)
 }

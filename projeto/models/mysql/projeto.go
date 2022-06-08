@@ -6,27 +6,24 @@ import (
 type formularioModel struct{
   DB *sql.DB
 }
-func(m *formularioModel)Insert(title, content, expires string) (int, error){
-  stmt := `INSERT INTO snippets (title, content, created, expires) 
-            VALUES(?,?,UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? DAY))`
+func(m *formularioModel)Insert(nome, email, mensagem string) (int, error){
+  stmt := `INSERT INTO formulario (nome, email, mensagem) 
+            VALUES(get nome, get email, get mensagem)`
 
-  result, err := m.DB.Exec(stmt, title, content, expires)
+  result, err := m.DB.Exec(stmt, nome, email, mensagem)
   if err != nil{
     return 0, err
   }
 
-  id, err := result.LastInsertId()
+  nome, err := result.LastInsertnome()
   if err != nil{
     return 0, err
   }
-  return int(id),nil
+  return int(nome),nil
 }
-func(m *projetoModel) Get(id int)(*models.projeto, error){
+func(m *formularioModel) Get(nome int)(*models.formulario, error){
   return nil, nil
 }
-func(m * projetoModel) Latest()([]*models.projeto, error){
+func(m *formularioModel) mensagem([]*models.formulario, error){
   return nil, nil
 }
-
-
-// go run *

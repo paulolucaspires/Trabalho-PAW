@@ -9,4 +9,10 @@ Uma pagina de envio de formulario, onde o usuario final pode: enviar o formunlar
 https://
 
 
-# Documentação:
+
+///// comando para inicar
+cd projeto
+go run *
+
+///// outros comentarios
+go run cmd/web/*
